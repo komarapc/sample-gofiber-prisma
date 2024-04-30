@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
+	hasRoles "goprisma/app/has-roles"
 	"goprisma/app/roles"
 	"goprisma/app/users"
 	"goprisma/db"
@@ -16,6 +17,7 @@ func setupApiRoutes(r *fiber.App, prisma *db.PrismaClient) {
 	api.Get("/", HomeHandler)
 	users.Routes(api.Group("/users"), prisma)
 	roles.Routes(api.Group("/roles"), prisma)
+	hasRoles.Routes(api.Group("/has-roles"), prisma)
 }
 
 func SetupRoutes(r *fiber.App, prisma *db.PrismaClient) {
