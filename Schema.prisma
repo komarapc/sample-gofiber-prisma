@@ -8,11 +8,35 @@ generator db {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String     @id @default(uuid())
   name      String
-  email     String    @unique
+  email     String     @unique
   password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  HasRole   HasRoles[]
+}
+
+model Roles {
+  id        String     @id @default(uuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  HasRole   HasRoles[]
+}
+
+model HasRoles {
+  id        String    @id @default(uuid())
+  userId    String
+  roleId    String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  User User  @relation(fields: [userId], references: [id])
+  Role Roles @relation(fields: [roleId], references: [id])
+
+  @@map("has_roles")
 }
