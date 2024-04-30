@@ -53,7 +53,7 @@ func main() {
 	app := fiber.New(fiberConfig())
 	app.Use(cors.New(cors.Config{AllowOrigins: "*"}))
 	app.Use(middleware.RateLimiter(60, 30))
-	app.Use(middleware.Cache(30))
+	app.Use(middleware.Cache(5))
 	routes.SetupRoutes(app, prisma)
 	if err := app.Listen(":" + port); err != nil {
 		log.Panic(err)
