@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"goprisma/db"
 	"goprisma/lib"
+	"goprisma/middleware"
 	"goprisma/routes"
 	"log"
 	"os"
@@ -37,7 +38,7 @@ func main() {
 	defer lib.DisconnectFromDatabase(prisma)
 	app := fiber.New(fiber.Config{Prefork: true, IdleTimeout: 10 * time.Second, EnablePrintRoutes: true})
 	app.Use(cors.New(cors.Config{AllowOrigins: "*"}))
-	//app.Use(middleware.RateLimiter(60, 30))
+	app.Use(middleware.RateLimiter(60, 30))
 	app.Use(cache.New(cache.Config{Expiration: time.Duration(30) * time.Second}))
 	routes.SetupRoutes(app, prisma)
 	if err := app.Listen(":" + port); err != nil {
