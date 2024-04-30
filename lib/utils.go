@@ -3,6 +3,7 @@ package lib
 import (
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
+	"time"
 )
 
 func HashPassword(password string) (string, error) {
@@ -19,4 +20,16 @@ func ConvertStringToInt(str string) int {
 		panic(err)
 	}
 	return number
+}
+
+func IsZeroTime(t time.Time) bool {
+	return t.IsZero()
+}
+
+func TimeDeletedAt(deletedAt time.Time) *time.Time {
+	var timeDeletedAt *time.Time
+	if !IsZeroTime(deletedAt) {
+		timeDeletedAt = &deletedAt
+	}
+	return timeDeletedAt
 }
