@@ -35,7 +35,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer lib.DisconnectFromDatabase(prisma)
+	defer func(prisma *db.PrismaClient) {
+		err := lib.DisconnectFromDatabase(prisma)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(prisma)
 	app := fiber.New(fiber.Config{Prefork: true, IdleTimeout: 10 * time.Second, EnablePrintRoutes: true})
 	app.Use(cors.New(cors.Config{AllowOrigins: "*"}))
 	app.Use(middleware.RateLimiter(60, 30))
