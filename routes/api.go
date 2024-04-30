@@ -6,13 +6,13 @@ import (
 	"goprisma/db"
 )
 
-func homeHandler(c *fiber.Ctx) error {
+func HomeHandler(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Hello World!"})
 }
 
 func setupApiRoutes(r *fiber.App, prisma *db.PrismaClient) {
 	api := r.Group("/api")
-	api.Get("/", homeHandler)
+	api.Get("/", HomeHandler)
 	users.Routes(api.Group("/users"), prisma)
 }
 
