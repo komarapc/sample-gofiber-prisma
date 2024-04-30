@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"goprisma/db"
@@ -21,7 +21,16 @@ func init() {
 	if errEnv != nil {
 		log.Fatal("Error loading .env file")
 	}
+}
 
+func fiberConfig() fiber.Config {
+	return fiber.Config{
+		Prefork:           true,
+		IdleTimeout:       10 * time.Second,
+		EnablePrintRoutes: true,
+		JSONEncoder:       json.Marshal,
+		JSONDecoder:       json.Unmarshal,
+	}
 }
 
 func main() {
@@ -41,10 +50,10 @@ func main() {
 			log.Fatal(err)
 		}
 	}(prisma)
-	app := fiber.New(fiber.Config{Prefork: true, IdleTimeout: 10 * time.Second, EnablePrintRoutes: true})
+	app := fiber.New(fiberConfig())
 	app.Use(cors.New(cors.Config{AllowOrigins: "*"}))
 	app.Use(middleware.RateLimiter(60, 30))
-	app.Use(cache.New(cache.Config{Expiration: time.Duration(30) * time.Second}))
+	app.Use(middleware.Cache(30))
 	routes.SetupRoutes(app, prisma)
 	if err := app.Listen(":" + port); err != nil {
 		log.Panic(err)

@@ -1,13 +1,33 @@
 package users
 
 import (
-	"goprisma/db"
-
 	"github.com/gofiber/fiber/v2"
+	"goprisma/db"
+	"goprisma/lib"
 )
 
+func requestQueryIndex(c *fiber.Ctx) UserQueryRequest {
+	q := c.Queries()
+	perPage := q["per_page"]
+	page := q["page"]
+	if page == "" {
+		page = "1"
+	}
+	if perPage == "" {
+		perPage = "10"
+	}
+	query := UserQueryRequest{
+		Name:    q["name"],
+		Email:   q["email"],
+		Page:    lib.ConvertStringToInt(page),
+		PerPage: lib.ConvertStringToInt(perPage),
+	}
+	return query
+}
+
 func IndexHandler(c *fiber.Ctx, prisma *db.PrismaClient) error {
-	result := GetAllUsersService(prisma)
+	q := requestQueryIndex(c)
+	result := GetAllUsersService(q, prisma)
 	return c.Status(result.StatusCode).JSON(result)
 }
 

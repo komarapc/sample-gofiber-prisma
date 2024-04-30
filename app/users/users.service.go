@@ -14,8 +14,8 @@ type UserRequest struct {
 	Password string `json:"password"`
 }
 
-func GetAllUsersService(prisma *db.PrismaClient) lib.ResponseData {
-	users := GetAllUsers(prisma)
+func GetAllUsersService(query UserQueryRequest, prisma *db.PrismaClient) lib.ResponseData {
+	users := GetAllUsers(query, prisma)
 	return lib.ResponseSuccess(lib.ResponseProps{Code: fiber.StatusOK, Data: users})
 }
 

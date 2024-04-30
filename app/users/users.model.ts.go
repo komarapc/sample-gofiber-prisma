@@ -16,15 +16,28 @@ type UserResponse struct {
 	DeletedAt *time.Time `json:"deleted_at"`
 }
 
-func GetAllUsers(prisma *db.PrismaClient) []UserResponse {
+type UserQueryRequest struct {
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Page    int    `json:"page"`
+	PerPage int    `json:"per_page"`
+}
 
-	users, _ := prisma.User.FindMany(db.User.DeletedAt.IsNull()).Select(
+func GetAllUsers(query UserQueryRequest, prisma *db.PrismaClient) []UserResponse {
+	offset := (query.Page - 1) * query.PerPage
+	users, _ := prisma.User.FindMany(
+		db.User.DeletedAt.IsNull(),
+		db.User.Name.Contains(query.Name),
+		db.User.Email.Contains(query.Email),
+	).OrderBy(
+		db.User.CreatedAt.Order(db.DESC),
+	).Select(
 		db.User.ID.Field(),
 		db.User.Name.Field(),
 		db.User.Email.Field(),
 		db.User.CreatedAt.Field(),
 		db.User.UpdatedAt.Field(),
-	).Take(10).Exec(context.Background())
+	).Skip(offset).Take(query.PerPage).Exec(context.Background())
 	var response []UserResponse
 	for _, user := range users {
 		response = append(response, UserResponse{

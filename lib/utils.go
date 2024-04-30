@@ -2,6 +2,7 @@ package lib
 
 import (
 	"golang.org/x/crypto/bcrypt"
+	"strconv"
 )
 
 func HashPassword(password string) (string, error) {
@@ -10,4 +11,12 @@ func HashPassword(password string) (string, error) {
 		return "", err
 	}
 	return string(bytes), nil
+}
+
+func ConvertStringToInt(str string) int {
+	number, err := strconv.Atoi(str)
+	if err != nil {
+		panic(err)
+	}
+	return number
 }
