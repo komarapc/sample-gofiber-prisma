@@ -1,10 +1,6 @@
 package main
 
 import (
-	"github.com/goccy/go-json"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/joho/godotenv"
 	"goprisma/db"
 	"goprisma/lib"
 	"goprisma/middleware"
@@ -12,6 +8,11 @@ import (
 	"log"
 	"os"
 	"time"
+
+	"github.com/goccy/go-json"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 )
 
 var prisma *db.PrismaClient
