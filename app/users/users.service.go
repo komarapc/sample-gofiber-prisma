@@ -140,3 +140,16 @@ func validateStoreRequest(user UserRequest) []lib.ValidationResponse {
 
 	return errors
 }
+
+func CheckUserExistAndDeletedAt(id string, prisma *db.PrismaClient) (*db.UserModel, *time.Time) {
+	userExist := GetUserById(id, prisma)
+	if userExist == nil {
+		return nil, nil
+	}
+	deletedAtUserExist, _ := userExist.DeletedAt()
+	var timeDeletedAt *time.Time
+	if deletedAtUserExist.IsZero() == false {
+		timeDeletedAt = &deletedAtUserExist
+	}
+	return userExist, timeDeletedAt
+}

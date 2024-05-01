@@ -1,10 +1,11 @@
 package roles
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"goprisma/db"
 	"goprisma/lib"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func GetAllRoles(query RoleQueryRequest, prisma *db.PrismaClient) lib.ResponseData {
@@ -108,6 +109,19 @@ func UndeleteRole(id string, p *db.PrismaClient) lib.ResponseData {
 	}
 	undeleteRole := RestoreRole(id, p)
 	return lib.ResponseSuccess(lib.ResponseProps{Code: fiber.StatusOK, Data: undeleteRole})
+}
+
+func CheckRoleExistAndDeletedAt(id string, p *db.PrismaClient) (*db.RolesModel, *time.Time) {
+	roleExist := FindById(id, p)
+	if roleExist == nil {
+		return nil, nil
+	}
+	deletedAt, _ := roleExist.DeletedAt()
+	zTime := lib.IsZeroTime(deletedAt)
+	if zTime {
+		return roleExist, nil
+	}
+	return roleExist, &deletedAt
 }
 
 func validateStoreRequest(role RoleRequest) []lib.ValidationResponse {
