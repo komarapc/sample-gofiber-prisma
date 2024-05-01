@@ -6,9 +6,9 @@ import (
 )
 
 func Routes(r fiber.Router, p *db.PrismaClient) {
-	r.Get("/", func(c *fiber.Ctx) error { return IndexController(c) })
-	r.Get("/:id", func(c *fiber.Ctx) error { return ShowController(c) })
-	r.Post("/", func(c *fiber.Ctx) error { return StoreController(c) })
-	r.Put("/:id", func(c *fiber.Ctx) error { return UpdateController(c) })
-	r.Delete("/:id", func(c *fiber.Ctx) error { return DestroyController(c) })
+	r.Get("/user/:userId", func(c *fiber.Ctx) error { return IndexController(c, p) })
+	r.Get("/:id", func(c *fiber.Ctx) error { return ShowController(c, p) })
+	r.Post("/", func(c *fiber.Ctx) error { return StoreController(c, p) })
+	r.Put("/:id", func(c *fiber.Ctx) error { return UpdateController(c, p) })
+	r.Delete("/:id", func(c *fiber.Ctx) error { return DestroyController(c, p) })
 }
